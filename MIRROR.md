@@ -1,4 +1,10 @@
-# Syncing this mirror
+# Syncing this fork
+
+Bring changes into this fork from `backnotprop/pstack`. After merging them, run `sh mirror-assets/sync-model-settings.sh` and `python3 mirror-assets/test-model-config-path.py` to keep the standalone skills aligned.
+
+Maintain the harness IDs and model paths in [the built-in route table](skills/setup-pstack/references/model-config-routes.conf). When updating the `npx skills` baseline, pass a downloaded copy of its `src/types.ts` to the test command to verify exact ID coverage.
+
+# Syncing the parent mirror
 
 This repo mirrors [`cursor/plugins/pstack`](https://github.com/cursor/plugins/tree/main/pstack) and adds its own edits: the top of `README.md` and harness-neutral rewrites in some skills.
 

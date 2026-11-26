@@ -5,13 +5,13 @@
   <a href="https://github.com/cursor/plugins/tree/main/pstack">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="mirror-assets/header-dark.svg">
-      <img src="mirror-assets/header-light.svg" width="100%" alt="cursor/plugins/pstack is kept in sync with this mirror, backnotprop/pstack. npx skills add backnotprop/pstack installs it into Claude Code, Codex, Pi, Cursor, OpenCode, and other agents.">
+      <img src="mirror-assets/header-light.svg" width="100%" alt="pstack for Codex, Claude Code, Devin Local, Kiro, Cursor, and other harnesses.">
     </picture>
   </a>
 </p>
 
 <p align="center">
-  <b>Mirror</b> of cursor/plugins/pstack by Poteto — kept in sync for standalone use. Sponsored by Plannotator.
+  <b>Fork</b> of <a href="https://github.com/backnotprop/pstack">backnotprop/pstack</a>, the standalone mirror of Poteto’s pstack. The fork adds per-harness model settings.
 </p>
 
 <p align="center">
@@ -34,7 +34,7 @@
 pstack is a folder of plain [Agent Skills](https://agentskills.io) (`skills/<name>/SKILL.md`). You don't need [Cursor](https://github.com/cursor/plugins/tree/main/pstack). The [`skills` CLI](https://skills.sh) installs them into Claude Code, Codex, Pi, Cursor, OpenCode, and other agents:
 
 ```bash
-npx skills add backnotprop/pstack
+npx skills add htgylzhq/pstack
 ```
 
 The CLI shows every skill in a list you can search. Select the skills you want, then select your agents.
@@ -43,7 +43,7 @@ The CLI shows every skill in a list you can search. Select the skills you want, 
 
 Cursor's original README is [further down this page](#pstack).
 
-These skills don't call other pstack skills, so each one works alone:
+These workflows can be installed individually. For workflows that read model settings, also supply the routing table described below.
 
 `unslop`, `bro`, `how`, `why`, `tdd`, `typescript-best-practices`, `arena`, `swarm`, `interrogate`, `reflect`, `show-me-your-work`, `figure-it-out`, `automate-me`, `correct`, `benchmark-checklist`, `in-your-own-words`, `sharpen`, `reframe`, `statechart`
 
@@ -63,6 +63,28 @@ Some skills call other skills. Install these together:
 | `poteto-help` | the skills you want help with |
 
 Skills that spawn subagents point to the Subagents section of `poteto-mode` to pick each subagent's effort. Without `poteto-mode`, they use the default effort.
+
+## Per-harness model settings
+
+Run [setup-pstack](skills/setup-pstack/SKILL.md) in each harness to configure its role mappings. When installing individual routing skills, install setup-pstack in the same scope or globally to provide the [built-in routing table](skills/setup-pstack/references/model-config-routes.conf).
+
+| Harness | Default model settings file |
+|---|---|
+| Codex | `~/.codex/pstack-models.md` |
+| Devin Local on macOS or Linux | `~/.config/devin/pstack-models.md` |
+| Kiro | `~/.kiro/pstack-models.md` |
+| Gemini CLI | `~/.gemini/pstack-models.md` |
+| GitHub Copilot | `~/.copilot/pstack-models.md` |
+| OpenCode | `~/.config/opencode/pstack-models.md` |
+| Pi | `~/.pi/agent/pstack-models.md` |
+
+The built-in table follows the [`npx skills` harness IDs](https://github.com/vercel-labs/skills/blob/main/src/types.ts) and includes profile environment variables where applicable. It keeps the existing Cursor and Claude Code rule paths and gives each listed harness its own file, including harnesses that share a skills directory. The `other` route keeps the legacy shared file for unlisted harnesses. To move existing choices to a dedicated file, rerun setup in that harness and confirm its available models. Setup does not copy the old `~/.agents/pstack-models.md`. Until you rerun it, skills in that harness report the new file as missing (Cursor and Claude Code keep working).
+
+### Override the routing table
+
+Copy the built-in file to `~/.agents/pstack/model-config-routes.conf` and edit the routes you want to change. The resolver uses the user file when present and the built-in table when it is absent. Keep an entry for every harness you use in the user file. Each row's first two fields are the harness ID and the directory, separated by `|`. For example, `codex|.config/my-pstack/codex` puts the `pstack-models.md` file in that directory under your home. The table header explains the optional fields.
+
+Maintainers edit the [canonical resolver](skills/setup-pstack/scripts/model-config-path.sh) and the [usage reference](skills/setup-pstack/references/model-settings.md) in setup-pstack. Run `sh mirror-assets/sync-model-settings.sh` to refresh the standalone copies of the resolver and reference.
 
 ## What this mirror changes
 
